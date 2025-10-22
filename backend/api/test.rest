@@ -1,0 +1,39 @@
+
+POST http://127.0.0.1:8000/api/transactions/
+Content-Type: application/json
+
+{
+    "amount": 150.75,
+    "text": "Grocery shopping"
+}
+
+###
+
+GET http://127.0.0.1:8000/api/transactions/
+Content-Type: application/json
+
+###
+
+GET http://127.0.0.1:8000/api/transactions/720046fd-2299-4d39-87cb-35b6dcec7eae
+Content-Type: application/json
+
+
+###
+PUT http://127.0.0.1:8000/api/transactions/49f02a8f-2725-483d-9d3d-725c5734f187/
+Content-Type: application/json
+
+{
+    "amount": 200.00,
+    "text": "Updated grocery shopping"
+}
+
+###
+PATCH http://127.0.0.1:8000/api/transactions/3b4a9aa7-b2b9-4e11-a434-ca3d18c01e08/
+Content-Type: application/json
+
+{
+    "text": "Grocery"
+}
+
+###
+DELETE http://127.0.0.1:8000/api/transactions/497e2e46-31ce-4425-8704-806634b9fc74/
