@@ -1,9 +1,10 @@
+# For API testing in REST Client
 
 POST http://127.0.0.1:8000/api/transactions/
 Content-Type: application/json
 
 {
-    "amount": 150.75,
+    "amount": -150.75,
     "text": "Grocery shopping"
 }
 

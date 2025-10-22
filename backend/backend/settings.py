@@ -25,8 +25,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'api.apps.ApiConfig',  # Add your app here
-    'rest_framework',  # you're using Django REST framework
+    'api.apps.ApiConfig',  # Your app
+    'rest_framework',
+    'drf_yasg',  # Swagger/OpenAPI
+    'django_extensions',  # Dev tools
 ]
 
 MIDDLEWARE = [
@@ -37,7 +39,20 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
+
+# Allow CORS for frontend
+CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]
+# Linting/Testing/Formatting tools:
+# - Run `flake8` for linting
+# - Run `black .` for code formatting
+# - Run `isort .` for import sorting
+# - Run `pytest` or `pytest-django` for tests
+# - Run `coverage run -m pytest` for coverage
 
 ROOT_URLCONF = 'backend.urls'
 

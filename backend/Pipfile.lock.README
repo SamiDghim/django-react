@@ -1,0 +1,12 @@
+# After editing Pipfile, run:
+#   pipenv install --dev
+# To activate the environment:
+#   pipenv shell
+# To run Django:
+#   pipenv run python manage.py runserver
+# To run tests:
+#   pipenv run pytest
+# To lint:
+#   pipenv run flake8
+# To format:
+#   pipenv run black .
