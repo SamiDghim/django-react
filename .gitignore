@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+*.pdb
+*.egg-info/
+*.egg
+*.log
+*.sqlite3
+
+# Django
+*.db
+*.sqlite3
+media/
+staticfiles/
+
+# Virtualenv
+.env/
+.venv/
+env/
+ENV/
+venv/
+
+# Pipenv
+Pipfile.lock
+
+# VSCode
+.vscode/
+
+# Node
+node_modules/
+.next/
+dist/
+build/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Test/coverage
+htmlcov/
+.coverage
+.tox/
+.coverage.*
+.cache
+
+# Misc
+*.swp
+*.swo
+
+# Ignore local env files
+.env
+.env.*
