@@ -73,8 +73,6 @@ This monorepo contains a Django REST API backend and a Next.js (React) frontend.
 - `backend/` - Django project root (with Pipfile)
 - `backend/api/` - Django app for API endpoints
 - `frontend/` - Next.js React frontend
-- `.venv/` or `env/` - Python virtual environment (auto-managed by Pipenv)
-
 ---
 
 ## Development Workflow
@@ -90,5 +88,3 @@ This monorepo contains a Django REST API backend and a Next.js (React) frontend.
 	```
 
 ---
-
-Feel free to extend this README with more details as your project grows!
