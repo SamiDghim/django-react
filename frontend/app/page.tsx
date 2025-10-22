@@ -3,84 +3,115 @@
 import { useEffect, useState } from "react";
 import api from "./api";
 import toast from "react-hot-toast";
-
-type Transaction = {
-  id: number;
-  text: string;
-  amount: number;
-  created_at: string;
-};
+import BalanceSummary from "./components/BalanceSummary";
+import RatioProgress from "./components/RatioProgress";
+import TransactionTable from "./components/TransactionTable";
+import AddTransactionModal from "./components/AddTransactionModal";
+import AddTransactionButton from "./components/AddTransactionButton";
+import { Transaction } from "./types";
 
 
 export default function Home() {
-  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [text, setText] = useState<string>("");
+  const [amount, setAmount] = useState<number | "">("");
+  const [loading, setLoading] = useState(false)
+
   const getTransactions = async () => {
     try {
-      const response = await api.get<Transaction[]>('transactions/');
-      setTransactions(response.data);
-      toast.success("Transactions fetched successfully!");
+      const response = await api.get<Transaction[]>("transactions/")
+      setTransactions(response.data)
     } catch (error) {
-      console.error("Error fetching transactions:", error);
-      toast.error("Failed to fetch transactions.");
+      console.error("Erreur chargement transactions", error);
+      toast.error("Erreur chargement transactions")
     }
-  };
+  }
 
   useEffect(() => {
-    getTransactions();
+    getTransactions()
   }, []);
 
-  const amounts = transactions.map(t => Number(t.amount) || 0);
-  const balance = amounts.reduce((acc, item) => acc + item, 0) || 0;
-  const income = amounts
-    .filter(item => item > 0)
-    .reduce((acc, item) => acc + item, 0) || 0;
-  const expense = amounts
-    .filter(item => item < 0)
-    .reduce((acc, item) => acc + item, 0) || 0;
-  const ratio = income !== 0 ? ((expense / income) * 100).toFixed(2) : "0.00";
+
+  const deleteTransaction = async (id: string) => {
+    try {
+      await api.delete(`transactions/${id}/`)
+      getTransactions()
+      toast.success("Transaction supprimée avec succès")
+    } catch (error) {
+      console.error("Erreur suppression transaction", error);
+      toast.error("Erreur suppression transaction")
+    }
+  }
+
+
+  const addTransaction = async () => {
+    if (!text || amount == "" || isNaN(Number(amount))) {
+      toast.error("Merci de remplir texte et montant valides")
+      return
+    }
+    setLoading(true)
+
+    try {
+      await api.post<Transaction>(`transactions/`, {
+        text,
+        amount: Number(amount)
+      })
+      getTransactions()
+      const modal = document.getElementById('my_modal_3') as HTMLDialogElement
+      if (modal) {
+        modal.close()
+      }
+
+      toast.success("Transaction ajoutée avec succès")
+      setText("")
+      setAmount("")
+    } catch (error) {
+      console.error("Erreur ajout transaction", error);
+      toast.error("Erreur ajout transaction")
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const amounts = transactions.map((t) => Number(t.amount) || 0)
+  const balance = amounts.reduce((acc, item) => acc + item, 0) || 0
+  const income =
+    amounts.filter((a) => a > 0).reduce((acc, item) => acc + item, 0) || 0
+  const expense =
+    amounts.filter((a) => a < 0).reduce((acc, item) => acc + item, 0) || 0
+
+  const ratio = income > 0 ? Math.min((Math.abs(expense) / income) * 100, 100) : 0
+
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = {
+    const d = new Date(dateString);
+    return d.toLocaleDateString("fr-FR", {
       year: "numeric",
       month: "short",
       day: "numeric",
       hour: "2-digit",
       minute: "2-digit",
-    };
-    return new Date(dateString).toLocaleDateString(undefined, options);
+    });
   };
 
+
   return (
-      // // <button className="btn btn-sm" onClick={getTransactions}>
-      // <button className="btn btn-sm">
-      //   Get Transactions
-      //   {transactions.map((transaction) => (
-      //     <div key={transaction.id}>
-      //       <p>{transaction.text}</p>
-      //       <p>{transaction.amount}</p>
-      //       <p>{transaction.created_at}</p>
-      //     </div>
-      //   ))}
-      // </button>
-      <div className="">
-        <h2 className="text-2xl font-bold mb-4">Transaction History</h2>
-        <ul>
-          {transactions.map((transaction) => (
-            <li
-              key={transaction.id}
-              className="flex justify-between items-center border-b py-2"
-            >
-              <div>
-                <p className="font-medium">{transaction.text}</p>
-                <p className="text-sm text-gray-500">
-                  {formatDate(transaction.created_at)}
-                </p>
-              </div>
-              <p className={`font-medium ${transaction.amount < 0 ? "text-red-500" : "text-green-500"}`}>
-                {transaction.amount}
-              </p>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div className="w-2/3 flex flex-col gap-4">
+      <BalanceSummary balance={balance} income={income} expense={expense} />
+      <RatioProgress ratio={ratio} />
+      <AddTransactionButton />
+      <TransactionTable
+        transactions={transactions}
+        onDelete={deleteTransaction}
+        formatDate={formatDate}
+      />
+      <AddTransactionModal
+        text={text}
+        amount={amount}
+        setText={setText}
+        setAmount={setAmount}
+        loading={loading}
+        onAdd={addTransaction}
+      />
+    </div>
   );
 }
